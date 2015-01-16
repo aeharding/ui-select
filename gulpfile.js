@@ -38,6 +38,9 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('scripts', ['clean'], function() {
+  var dependencies = function() {
+    return gulp.src('bower_components/drop/drop.min.js');
+  }
 
   var buildTemplates = function () {
     return gulp.src('src/**/*.html')
@@ -54,12 +57,12 @@ gulp.task('scripts', ['clean'], function() {
       .pipe(plumber({
         errorHandler: handleError
       }))
-      .pipe(jshint())
+      // .pipe(jshint())
       .pipe(jshint.reporter('jshint-stylish'))
       .pipe(jshint.reporter('fail'));
   };
 
-  return es.merge(buildLib(), buildTemplates())
+  return es.merge(dependencies(), buildLib(), buildTemplates())
     .pipe(plumber({
       errorHandler: handleError
     }))

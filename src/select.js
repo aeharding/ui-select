@@ -216,6 +216,10 @@
         if(!avoidReset) _resetSearchInput();
         ctrl.focusser.prop('disabled', true); //Will reactivate it on .close()
         ctrl.open = true;
+        ctrl.drop.open();
+        console.log($element.css('width'))
+        ctrl.menu.css('width', window.getComputedStyle($element[0]).width);
+      
         ctrl.activeMatchIndex = -1;
 
         ctrl.activeIndex = ctrl.activeIndex >= ctrl.items.length ? 0 : ctrl.activeIndex;
@@ -454,6 +458,7 @@
       if (!ctrl.open) return;
       _resetSearchInput();
       ctrl.open = false;
+      ctrl.drop.close();
       if (!ctrl.multiple){
         $timeout(function(){
           ctrl.focusser.prop('disabled', false);
@@ -843,7 +848,7 @@
 
     // See https://github.com/ivaynberg/select2/blob/3.4.6/select2.js#L1431
     function _ensureHighlightVisible() {
-      var container = $element.querySelectorAll('.ui-select-choices-content');
+      var container = ctrl.menu.querySelectorAll('.ui-select-choices-content');
       var choices = container.querySelectorAll('.ui-select-choices-row');
       if (choices.length < 1) {
         throw uiSelectMinErr('choices', "Expected multiple .ui-select-choices-row but got '{0}'.", choices.length);
@@ -865,6 +870,7 @@
 
     $scope.$on('$destroy', function() {
       _searchInput.off('keyup keydown tagged blur');
+      $select.drop.destroy();
     });
   }])
 
@@ -1184,7 +1190,16 @@
           }
           element.querySelectorAll('.ui-select-choices').replaceWith(transcludedChoices);
         });
+        
+        $select.menu = element.querySelectorAll('.ui-select-menu');
+        $select.drop = new Drop({
+          target: element[0],
+          content: $select.menu[0],
+          position: 'bottom left',
+          openOn: null
+        });
       }
+
     };
   }])
 
