@@ -34,6 +34,7 @@ uis.controller('uiSelectCtrl',
   ctrl.closeOnSelect = true; // Initialized inside uiSelect directive link function
   ctrl.clickTriggeredSelect = false;
   ctrl.$filter = $filter;
+  ctrl.appendToBody = uiSelectConfig.appendToBody;
 
   ctrl.isEmpty = function() {
     return angular.isUndefined(ctrl.selected) || ctrl.selected === null || ctrl.selected === '';

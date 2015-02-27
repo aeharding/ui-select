@@ -1706,19 +1706,19 @@ describe('ui-select tests', function() {
 
   describe('default configuration via uiSelectConfig', function() {
 
-    describe('searchEnabled option', function() {
+    function setupWithoutAttr(){
+      return compileTemplate(
+        '<ui-select ng-model="selection.selected"> \
+          <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+          <ui-select-choices repeat="person in people | filter: $select.search"> \
+            <div ng-bind-html="person.name | highlight: $select.search"></div> \
+            <div ng-bind-html="person.email | highlight: $select.search"></div> \
+          </ui-select-choices> \
+        </ui-select>'
+      );
+    }
 
-      function setupWithoutAttr(){
-        return compileTemplate(
-          '<ui-select ng-model="selection.selected"> \
-            <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
-            <ui-select-choices repeat="person in people | filter: $select.search"> \
-              <div ng-bind-html="person.name | highlight: $select.search"></div> \
-              <div ng-bind-html="person.email | highlight: $select.search"></div> \
-            </ui-select-choices> \
-          </ui-select>'
-        );
-      }
+    describe('searchEnabled option', function() {
 
       function setupWithAttr(searchEnabled){
         return compileTemplate(
@@ -1762,6 +1762,46 @@ describe('ui-select tests', function() {
       });
     });
 
+    describe('appendToBody option', function() {
+
+      function setupWithAttr(appendToBody){
+        return compileTemplate(
+          '<ui-select ng-model="selection.selected"> \
+            <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+            <ui-select-choices repeat="person in people | filter: $select.search" append-to-body="' + appendToBody + '"> \
+              <div ng-bind-html="person.name | highlight: $select.search"></div> \
+              <div ng-bind-html="person.email | highlight: $select.search"></div> \
+            </ui-select-choices> \
+          </ui-select>'
+        );
+      }
+
+      it('should be false by default', function(){
+        var el = setupWithoutAttr();
+        expect(el.scope().$select.appendToBody).toBe(false);
+      });
+
+      it('should enable appending if inline option append-to-body=true', function(){
+        var el = setupWithAttr(true);
+        expect(el.scope().$select.appendToBody).toBe(true);
+      });
+
+      it('should enable appending if default set to true', function(){
+        var uiSelectConfig = $injector.get('uiSelectConfig');
+        uiSelectConfig.appendToBody = true;
+
+        var el = setupWithoutAttr();
+        expect(el.scope().$select.appendToBody).toBe(true);
+      });
+
+      it('should be overridden by inline option append-to-body=false', function(){
+        var uiSelectConfig = $injector.get('uiSelectConfig');
+        uiSelectConfig.appendToBody = true;
+
+        var el = setupWithAttr(false);
+        expect(el.scope().$select.appendToBody).toBe(false);
+      });
+    });
   });
 
   describe('accessibility', function() {

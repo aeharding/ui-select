@@ -26,6 +26,7 @@ uis.directive('uiSelectChoices',
 
         $select.disableChoiceExpression = attrs.uiDisableChoice;
         $select.onHighlightCallback = attrs.onHighlight;
+        $select.appendToBody = attrs.appendToBody ? attrs.appendToBody !== 'false' : $select.appendToBody;
 
         if(groupByExp) {
           var groups = element.querySelectorAll('.ui-select-choices-group');
